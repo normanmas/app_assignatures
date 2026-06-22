@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignatures</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estil.css') }}">
+</head>
+<body>
+    <header class="capçalera">
+        <h1>Assignatures</h1>
+        <p>Llista inicial d'assignatures.</p>
+    </header>
+
+    <main class="contingut">
+        <section class="targeta">
+            <h2>Assignatures de prova</h2>
+
+            <table class = "taula-assignatures">
+                <thead>
+                    <tr>
+                        <th>Assignatura</th>
+                        <th>Crèdits</th>
+                        <th>Semestre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assignatura in assignatures %}
+                        <tr>
+                            <td>{{ assignatura.nom }}</td>
+                            <td>{{ assignatura.credits }}</td>
+                            <td>{{ assignatura.semestre }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

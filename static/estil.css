@@ -33,3 +33,24 @@ body{
     border-radius: 6px;
     text-decoration: none;
 }
+
+.taula-assignatures {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+}
+
+.taula-assignatures th,
+.taula-assignatures td {
+    border: 1px solid #d9e2ec;
+    padding: 12px;
+    text-align: left;
+}
+
+.taula-assignatures th {
+    background-color: #e0ecff;
+}
+
+.taula-assignatures tr:nth-child(even) {
+    background-color: #f8fafc;
+}
