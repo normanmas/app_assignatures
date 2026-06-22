@@ -18,17 +18,21 @@
             <table class = "taula-assignatures">
                 <thead>
                     <tr>
-                        <th>Assignatura</th>
-                        <th>Crèdits</th>
+                        <th>Codi</th>
+                        <th>Títol</th>
                         <th>Semestre</th>
+                        <th>Model d'avaluació</th>
+                        <th>Descripció</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for assignatura in assignatures %}
                         <tr>
-                            <td>{{ assignatura.nom }}</td>
-                            <td>{{ assignatura.credits }}</td>
+                            <td>{{ assignatura.codi }}</td>
+                            <td>{{ assignatura.titol }}</td>
                             <td>{{ assignatura.semestre }}</td>
+                            <td>{{ assignatura.model_avaluacio }}</td>
+                            <td>{{ assignatura.descripcio }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

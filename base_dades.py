@@ -15,22 +15,25 @@ def crear_taules():
     connexio.execute("""
         CREATE TABLE IF NOT EXISTS assignatures (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nom TEXT NOT NULL,
-            credits INTEGER NOT NULL,
-            semestre TEXT NOT NULL
+            codi TEXT NOT NULL,
+            titol TEXT NOT NULL,
+            semestre TEXT NOT NULL,
+            model_avaluacio TEXT,
+            descripcio TEXT,
+            url TEXT            
         )
     """)
     
     connexio.commit()
     connexio.close()
 
-def inserir_assignatura(nom, credits, semestre):
+def inserir_assignatura(codi, titol, semestre, model_avaluacio, descripcio, url):
     connexio = obtenir_connexio()
     
     connexio.execute("""
-        INSERT INTO assignatures (nom, credits, semestre)
-        VALUES (?, ?, ?)
-    """, (nom, credits, semestre))
+        INSERT INTO assignatures (codi, titol, semestre, model_avaluacio, descripcio, url)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (codi, titol, semestre, model_avaluacio, descripcio, url))
     
     connexio.commit()
     connexio.close()
@@ -39,9 +42,9 @@ def obtenir_assignatures():
     connexio = obtenir_connexio()
     
     assignatures = connexio.execute("""
-                                    SELECT nom, credits, semestre
+                                    SELECT codi, titol, semestre, model_avaluacio, descripcio, url
                                     FROM assignatures
-                                    ORDER BY nom
+                                    ORDER BY codi
                                     """).fetchall()
         
     connexio.close()
@@ -60,6 +63,10 @@ def comptar_assignatures():
 
 def afegir_dades_inicials():
     if comptar_assignatures() == 0:
-        inserir_assignatura("Matemàtiques", 6, "Primer semestre")
-        inserir_assignatura("Programació 1", 6, "Primer semestre")
-        inserir_assignatura("Bases de dades", 6, "Segon semestre")
+        inserir_assignatura("22.401",
+                            "Fonaments de programació",
+                            "2026-1",
+                            "AC",
+                            "Assignatura inicial de prova",
+                            "https://apps.uoc.edu/PlaDocent/PlaDocent?Semestre=20261&SignatureCode=22.401&Context=3&Locale=ca"
+        )
