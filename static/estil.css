@@ -1,0 +1,35 @@
+body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f3f6f8;
+    color: #1f2933;
+}
+
+.capçalera {
+    background-color: #2563eb;
+    color: white;
+    padding: 32px;
+    text-align: center;
+}
+
+.contingut{
+    max-width: 900px;
+    margin: 32px auto;
+    padding: 0 16px;
+}
+
+.targeta{
+    background-color: white;
+    border: 1px solid #d9e2ec;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.botó{
+    display: inline-block;
+    background-color: #16a34a;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+}

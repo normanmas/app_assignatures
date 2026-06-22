@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicació per triar assignatures</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estil.css') }}">
+</head>
+<body>
+    <header class="capçalera">
+        <h1>Aplicació per triar assignatures</h1>
+        <p>Compara assignatures, crèdits i canvis del pla docent.</p>
+    </header>
+
+    <main class="contingut">
+        <section class="targeta">
+            <h2>Assignatures de prova</h2>
+
+            <ul>
+                {% for assignatura in assignatures %}
+                    <li>
+                        <strong>{{ assignatura.nom }}</strong>
+                        - {{ assignatura.credits }} crèdits
+                        - {{ assignatura.semestre }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
