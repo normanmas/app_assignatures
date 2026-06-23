@@ -1,6 +1,7 @@
 # Importar llibreries
-from flask import Flask, render_template
-from base_dades import crear_taules, afegir_dades_inicials, obtenir_assignatures
+from flask import Flask, render_template, redirect, url_for
+from base_dades import crear_taules, afegir_dades_inicials, obtenir_assignatures, inserir_assignatura, existeix_assignatura
+from scraper import llegir_assignatures_grau
 
 # Crear l'aplicació web
 aplicacio = Flask(__name__)
@@ -20,6 +21,21 @@ def inici():
 def veure_assignatures():
     assignatures = obtenir_assignatures()
     return render_template("assignatures.html", assignatures = assignatures)
+
+@aplicacio.route('/importar')
+def importar_assignatures():
+    url_grau = 'https://www.uoc.edu/ca/estudis/graus/grau-data-science'
+    assignatures_uoc = llegir_assignatures_grau(url_grau)
+    for assignatura in assignatures_uoc:
+        if not existeix_assignatura(assignatura['codi']):
+            inserir_assignatura(assignatura['codi'],
+                                assignatura['titol'],
+                                "2026-1",
+                                "Pendent",
+                                "Pendent de llegir el pla docent",
+                                assignatura['url']
+                                )
+    return redirect(url_for('veure_assignatures'))
 
 if __name__ == "__main__":
     crear_taules()              # Crear les taules a la base de dades si no existeixen

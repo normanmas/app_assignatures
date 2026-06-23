@@ -13,7 +13,7 @@
 
     <main class="contingut">
         <section class="targeta">
-            <h2>Assignatures de prova</h2>
+            <h2>Assignatures importades</h2>
 
             <table class = "taula-assignatures">
                 <thead>
@@ -23,6 +23,7 @@
                         <th>Semestre</th>
                         <th>Model d'avaluació</th>
                         <th>Descripció</th>
+                        <th>Pla docent</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,6 +34,9 @@
                             <td>{{ assignatura.semestre }}</td>
                             <td>{{ assignatura.model_avaluacio }}</td>
                             <td>{{ assignatura.descripcio }}</td>
+                            <td>
+                                <a href="{{ assignatura.url }}" target="_blank">Veure pla docent</a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

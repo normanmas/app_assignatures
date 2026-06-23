@@ -70,3 +70,15 @@ def afegir_dades_inicials():
                             "Assignatura inicial de prova",
                             "https://apps.uoc.edu/PlaDocent/PlaDocent?Semestre=20261&SignatureCode=22.401&Context=3&Locale=ca"
         )
+# Funció per buscar duplicats de les assignatures i evitar d'importar dos cops
+def existeix_assignatura(codi):
+    connexio = obtenir_connexio()
+    
+    resultat = connexio.execute("""
+                            SELECT COUNT(*) AS total
+                            FROM assignatures
+                            WHERE codi = ?
+                            """, (codi,)).fetchone()
+    
+    connexio.close()
+    return resultat["total"] > 0
