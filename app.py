@@ -1,7 +1,14 @@
 # Importar llibreries
 from flask import Flask, render_template, redirect, url_for
-from base_dades import crear_taules, afegir_dades_inicials, obtenir_assignatures, inserir_assignatura, existeix_assignatura
-from scraper import llegir_assignatures_grau
+from base_dades import(
+    crear_taules,
+    afegir_dades_inicials,
+    obtenir_assignatures,
+    inserir_assignatura,
+    existeix_assignatura,
+    actualitzar_detall_assignatura
+)
+from scraper import llegir_assignatures_grau, llegir_detall_assignatura
 
 # Crear l'aplicació web
 aplicacio = Flask(__name__)
@@ -35,6 +42,22 @@ def importar_assignatures():
                                 "Pendent de llegir el pla docent",
                                 assignatura['url']
                                 )
+    return redirect(url_for('veure_assignatures'))
+
+@aplicacio.route('/actualitzar-detall/<codi>')
+def actualitzar_detall(codi):
+    # Obtenir l'URL de l'assignatura a partir del codi
+    assignatures = obtenir_assignatures()
+
+    for assignatura in assignatures:
+        if assignatura['codi'] == codi:
+            # Llegir el pla docent i extreure la informació necessària
+            detall = llegir_detall_assignatura(assignatura['url'])
+        # Actualitzar la base de dades amb la informació obtinguda
+        actualitzar_detall_assignatura(codi,
+                                       detall['model_avaluacio'],
+                                       detall['descripcio']
+                                       )
     return redirect(url_for('veure_assignatures'))
 
 if __name__ == "__main__":

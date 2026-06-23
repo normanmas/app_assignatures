@@ -3,6 +3,7 @@ import sqlite3
 
 ruta_base_dades = "dades/assignatures.sqlite"
 
+# Crerar funcions de la base de dades
 # Obrir una connexió a la base de dades
 def obtenir_connexio():
     connexio = sqlite3.connect(ruta_base_dades)
@@ -82,3 +83,15 @@ def existeix_assignatura(codi):
     
     connexio.close()
     return resultat["total"] > 0
+
+def actualitzar_detall_assignatura(codi, model_avaluacio, descripcio):
+    connexio = obtenir_connexio()
+    
+    connexio.execute("""
+        UPDATE assignatures
+        SET model_avaluacio = ?, descripcio = ?
+        WHERE codi = ?
+    """, (model_avaluacio, descripcio, codi))
+    
+    connexio.commit()
+    connexio.close()

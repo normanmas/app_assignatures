@@ -10,11 +10,9 @@
         <h1>Assignatures</h1>
         <p>Llista inicial d'assignatures.</p>
     </header>
-
     <main class="contingut">
         <section class="targeta">
             <h2>Assignatures importades</h2>
-
             <table class = "taula-assignatures">
                 <thead>
                     <tr>
@@ -24,6 +22,7 @@
                         <th>Model d'avaluació</th>
                         <th>Descripció</th>
                         <th>Pla docent</th>
+                        <th>Accions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,6 +35,9 @@
                             <td>{{ assignatura.descripcio }}</td>
                             <td>
                                 <a href="{{ assignatura.url }}" target="_blank">Veure pla docent</a>
+                            </td>
+                            <td>
+                                <a href="/actualitzar-detall/{{ assignatura.codi }}">Actualitzar detall</a>
                             </td>
                         </tr>
                     {% endfor %}
