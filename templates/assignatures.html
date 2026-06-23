@@ -32,7 +32,16 @@
                             <td>{{ assignatura.titol }}</td>
                             <td>{{ assignatura.semestre }}</td>
                             <td>{{ assignatura.model_avaluacio }}</td>
-                            <td>{{ assignatura.descripcio }}</td>
+                            <td>
+                                {% if assignatura.descripcio %}
+                                    {{ assignatura.descripcio[:200] }}
+                                    {% if assignatura.descripcio|length > 200 %}
+                                        ...
+                                    {% endif %}
+                                {% else %}
+                                    Pendent
+                                {% endif %}
+                            </td>
                             <td>
                                 <a href="{{ assignatura.url }}" target="_blank">Veure pla docent</a>
                             </td>
