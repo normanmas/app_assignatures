@@ -6,7 +6,9 @@ from base_dades import(
     obtenir_assignatures,
     inserir_assignatura,
     existeix_assignatura,
-    actualitzar_detall_assignatura
+    actualitzar_detall_assignatura,
+    obtenir_o_crear_grau,
+    relacionar_grau_assignatura
 )
 from scraper import llegir_assignatures_grau, llegir_detall_assignatura
 
@@ -31,17 +33,53 @@ def veure_assignatures():
 
 @aplicacio.route('/importar')
 def importar_assignatures():
-    url_grau = 'https://www.uoc.edu/ca/estudis/graus/grau-data-science'
-    assignatures_uoc = llegir_assignatures_grau(url_grau)
-    for assignatura in assignatures_uoc:
-        if not existeix_assignatura(assignatura['codi']):
-            inserir_assignatura(assignatura['codi'],
-                                assignatura['titol'],
-                                "2026-1",
-                                "Pendent",
-                                "Pendent de llegir el pla docent",
-                                assignatura['url']
-                                )
+    graus = [
+        {
+            "nom": "Grau de Ciència de Dades Aplicada",
+            "url": "https://www.uoc.edu/ca/estudis/graus/grau-data-science"
+        },
+        {
+            "nom": "Grau d'Enginyeria Biomèdica",
+            "url": "https://www.uoc.edu/ca/estudis/graus/grau-enginyeria-biomedica"
+        },
+        {
+            "nom": "Grau d'Enginyeria i Telecomunicació",
+            "url": "https://www.uoc.edu/ca/estudis/graus/grau-tecnologies-telecomunicacio"
+        },
+        {
+            "nom": "Grau d'Enginyeria Informàtica",
+            "url": "https://www.uoc.edu/ca/estudis/graus/grau-enginyeria-informatica"
+        },
+        {
+            "nom": "Grau de Multimèdia",
+            "url": "https://www.uoc.edu/ca/estudis/graus/grau-multimedia"
+        },
+        {
+            "nom": "Grau de Desenvolupament i Proves de Software",
+            "url": "https://www.uoc.edu/ca/estudis/graus/grau-desenvolupament-proves-software"
+        },
+        {
+            "nom": "Doble grau d'Informàtica i ADE",
+            "url": "https://www.uoc.edu/ca/estudis/graus/grau-informatica-ade-doble-titulacio"
+        }
+    ]
+    # url_grau = 'https://www.uoc.edu/ca/estudis/graus/grau-data-science'
+    # Bucle per passar per tots els graus d'Informàtica, Multimèdia i Telecomunicació
+    for grau in graus:
+        grau_id = obtenir_o_crear_grau(grau['nom'], grau['url'])
+        assignatures_uoc = llegir_assignatures_grau(grau['url'])
+
+        # Bucle per passar per totes les assignatures d'un grau
+        for assignatura in assignatures_uoc:
+            if not existeix_assignatura(assignatura['codi']):
+                inserir_assignatura(assignatura['codi'],
+                                    assignatura['titol'],
+                                    "2026-1",
+                                    "Pendent",
+                                    "Pendent de llegir el pla docent",
+                                    assignatura['url']
+                                    )
+            relacionar_grau_assignatura(grau_id, assignatura['codi'])
     return redirect(url_for('veure_assignatures'))
 
 @aplicacio.route('/actualitzar-detall/<codi>')

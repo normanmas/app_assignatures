@@ -24,7 +24,20 @@ def crear_taules():
             url TEXT            
         )
     """)
-    
+    connexio.execute("""
+        CREATE TABLE IF NOT EXISTS graus (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nom TEXT NOT NULL,
+            url TEXT NOT NULL UNIQUE
+        )
+    """)
+    connexio.execute("""
+        CREATE TABLE IF NOT EXISTS graus_assignatures (
+            grau_id INTEGER NOT NULL,
+            assignatura_codi TEXT NOT NULL,
+            PRIMARY KEY (grau_id, assignatura_codi)
+        )
+    """)
     connexio.commit()
     connexio.close()
 
@@ -95,3 +108,38 @@ def actualitzar_detall_assignatura(codi, model_avaluacio, descripcio):
     
     connexio.commit()
     connexio.close()
+
+def obtenir_o_crear_grau(nom, url):
+    connexio = obtenir_connexio()
+    
+    # Comprovar si el grau ja existeix
+    grau = connexio.execute("""
+        SELECT id
+        FROM graus
+        WHERE url = ?
+    """, (url,)).fetchone()
+    
+    if grau:
+        connexio.close()
+        return grau['id']
+    
+    cursor = connexio.execute("""
+        INSERT INTO graus (nom, url)
+        VALUES (?, ?)
+    """, (nom, url))
+    
+    connexio.commit()
+    grau_id = cursor.lastrowid
+    connexio.close()
+    return grau_id
+
+def relacionar_grau_assignatura(grau_id, assignatura_codi):
+    connexio = obtenir_connexio()
+    
+    connexio.execute("""
+        INSERT OR IGNORE INTO graus_assignatures (grau_id, assignatura_codi)
+        VALUES (?, ?)
+    """, (grau_id, assignatura_codi))
+    
+    connexio.commit()
+    connexio.close( )
