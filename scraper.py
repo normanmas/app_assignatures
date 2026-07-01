@@ -53,7 +53,7 @@ def llegir_pagina(url):
         return titol.text.strip()
     return "No s'ha trobat cap títol"
 
-def llegir_text_pla_docent(url):
+def crear_navegador():
     # Configurar les opcions del navegador
     opcions = Options()
 
@@ -62,16 +62,21 @@ def llegir_text_pla_docent(url):
     # Ruta al binari de Firefox
     opcions.binary_location = "/snap/firefox/8521/usr/lib/firefox/firefox"
 
-    # Crear una instància del navegador
-    navegador = webdriver.Firefox(options=opcions)
+    return webdriver.Firefox(options=opcions)
+
+def llegir_text_pla_docent_amb_navegador(navegador, url):
+    navegador.get(url)
+    WebDriverWait(navegador, 30).until(
+        lambda pagina: "Descripció" in pagina.find_element(By.TAG_NAME, "body").text
+    )
+
+    return navegador.find_element(By.TAG_NAME, "body").text
+
+def llegir_text_pla_docent(url):
+    navegador = crear_navegador()
 
     try:
-        navegador.get(url)
-        WebDriverWait(navegador, 30).until(
-            lambda pagina: "Descripció" in pagina.find_element(By.TAG_NAME, "body").text
-        )
-
-        return navegador.find_element(By.TAG_NAME, "body").text
+        return llegir_text_pla_docent_amb_navegador(navegador, url)
     finally:
         navegador.quit()
 
@@ -108,6 +113,15 @@ def extreure_descripcio(text):
 
 def llegir_detall_assignatura(url):
     text = llegir_text_pla_docent(url)
+
+    detall = {
+        'model_avaluacio': extreure_model_avaluacio(text),
+        'descripcio': extreure_descripcio(text)
+    }
+    return detall
+
+def llegir_detall_assignatura_amb_navegador(navegador, url):
+    text = llegir_text_pla_docent_amb_navegador(navegador, url)
 
     detall = {
         'model_avaluacio': extreure_model_avaluacio(text),

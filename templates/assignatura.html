@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ assignatura.titol }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estil.css') }}">
+</head>
+<body>
+    <header class="capçalera">
+        <h1>{{ assignatura.titol }}</h1>
+        <p>{{ assignatura.codi }}</p>
+    </header>
+
+    <main class="contingut">
+        <section class="targeta">
+            <p><strong>Graus:</strong> {{ assignatura.graus  }}</p>
+            <p><strong>Semestre:</strong> {{ assignatura.semestre }}</p>
+            <p><strong>Model d'avaluació:</strong> {{ assignatura.model_avaluacio }}</p>
+
+            <h2>Descripció</h2>
+            <p>{{ assignatura.descripcio }}</p>
+
+            <p>
+                <a class="boto" href="{{ assignatura.url }}" target="_blank">Veure pla docent</a>
+                <a class="boto" href="/actualitzar-detall/{{ assignatura.codi }}">Actualitzar detall</a>
+                <a class="boto" href="/assignatures">Tornar</a>
+            </p>
+        </section>
+    </main>
+</body>
+</html>

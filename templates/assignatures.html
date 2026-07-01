@@ -13,11 +13,43 @@
     <main class="contingut">
         <section class="targeta">
             <h2>Assignatures importades</h2>
+
+            <!-- Formulari per filtrar les assignatures per grau -->
+            <form method="get" action="/assignatures">
+
+                <!-- Filtre per grau -->
+                <label for="grau_id">Filtrar per grau:</label>
+
+                <select name="grau_id" id="grau_id">
+                    <option value="">Tots els graus</option>
+
+                    {% for grau in graus %}
+                        <option value="{{ grau.id }}" {% if grau_id == grau.id|string %}selected{% endif %}>
+                            {{ grau.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <!-- Filtre per model d'avaluació -->
+                <label for="model_avaluacio">Model d'avaluació:</label>
+
+                <select name="model_avaluacio" id="model_avaluacio">
+                    <option value="">Tots els models</option>
+                    <option value="AC" {% if model_avaluacio == "AC" %}selected{% endif %}>AC</option>
+                    <option value="EX" {% if model_avaluacio == "EX" %}selected{% endif %}>EX</option>
+                    <option value="Pendent" {% if model_avaluacio == "Pendent" %}selected{% endif %}>Pendent</option>
+                </select>
+                
+                <button type="submit">Filtrar</button>
+            </form>
+
+            <!-- Taula amb les assignatures importades -->
             <table class = "taula-assignatures">
                 <thead>
                     <tr>
                         <th>Codi</th>
                         <th>Títol</th>
+                        <th>Graus</th>
                         <th>Semestre</th>
                         <th>Model d'avaluació</th>
                         <th>Descripció</th>
@@ -29,7 +61,16 @@
                     {% for assignatura in assignatures %}
                         <tr>
                             <td>{{ assignatura.codi }}</td>
-                            <td>{{ assignatura.titol }}</td>
+                            <td>
+                                <a href="/assignatura/{{ assignatura.codi }}">{{ assignatura.titol }}</a>
+                            </td>
+                            <td>
+                                {% if assignatura.graus %}
+                                    {{ assignatura.graus }}
+                                {% else %}
+                                    Sense grau assignat
+                                {% endif %}
+                            </td>
                             <td>{{ assignatura.semestre }}</td>
                             <td>{{ assignatura.model_avaluacio }}</td>
                             <td>

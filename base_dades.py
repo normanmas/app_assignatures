@@ -10,6 +10,7 @@ def obtenir_connexio():
     connexio.row_factory = sqlite3.Row
     return connexio
 
+# Crear les taules per primer cop, per si no existeixen.
 def crear_taules():
     connexio = obtenir_connexio()
     
@@ -56,13 +57,32 @@ def obtenir_assignatures():
     connexio = obtenir_connexio()
     
     assignatures = connexio.execute("""
-                                    SELECT codi, titol, semestre, model_avaluacio, descripcio, url
+                                    SELECT
+                                        assignatures.codi,
+                                        assignatures.titol,
+                                        assignatures.semestre,
+                                        assignatures.model_avaluacio,
+                                        assignatures.descripcio,
+                                        assignatures.url,
+                                        GROUP_CONCAT(graus.nom, ', ') AS graus
                                     FROM assignatures
-                                    ORDER BY codi
+                                    LEFT JOIN graus_assignatures
+                                        ON graus_assignatures.assignatura_codi = assignatures.codi
+                                    LEFT JOIN graus
+                                        ON graus.id = graus_assignatures.grau_id
+                                    GROUP BY
+                                        assignatures.codi,
+                                        assignatures.titol,
+                                        assignatures.semestre,
+                                        assignatures.model_avaluacio,
+                                        assignatures.descripcio,
+                                        assignatures.url
+                                    ORDER BY assignatures.codi
                                     """).fetchall()
         
     connexio.close()
     return assignatures
+
 
 def comptar_assignatures():
     connexio = obtenir_connexio()
@@ -75,6 +95,7 @@ def comptar_assignatures():
     connexio.close()
     return resultat["total"]
 
+
 def afegir_dades_inicials():
     if comptar_assignatures() == 0:
         inserir_assignatura("22.401",
@@ -84,6 +105,8 @@ def afegir_dades_inicials():
                             "Assignatura inicial de prova",
                             "https://apps.uoc.edu/PlaDocent/PlaDocent?Semestre=20261&SignatureCode=22.401&Context=3&Locale=ca"
         )
+
+
 # Funció per buscar duplicats de les assignatures i evitar d'importar dos cops
 def existeix_assignatura(codi):
     connexio = obtenir_connexio()
@@ -97,6 +120,7 @@ def existeix_assignatura(codi):
     connexio.close()
     return resultat["total"] > 0
 
+
 def actualitzar_detall_assignatura(codi, model_avaluacio, descripcio):
     connexio = obtenir_connexio()
     
@@ -108,6 +132,7 @@ def actualitzar_detall_assignatura(codi, model_avaluacio, descripcio):
     
     connexio.commit()
     connexio.close()
+
 
 def obtenir_o_crear_grau(nom, url):
     connexio = obtenir_connexio()
@@ -133,6 +158,7 @@ def obtenir_o_crear_grau(nom, url):
     connexio.close()
     return grau_id
 
+
 def relacionar_grau_assignatura(grau_id, assignatura_codi):
     connexio = obtenir_connexio()
     
@@ -143,3 +169,85 @@ def relacionar_grau_assignatura(grau_id, assignatura_codi):
     
     connexio.commit()
     connexio.close( )
+
+
+def obtenir_assignatura_codi(codi):
+    connexio = obtenir_connexio()
+
+    assignatura = connexio.execute("""
+        SELECT
+            assignatures.codi,
+            assignatures.titol,
+            assignatures.semestre,
+            assignatures.model_avaluacio,
+            assignatures.descripcio,
+            assignatures.url,
+            GROUP_CONCAT(graus.nom, ', ') AS graus
+        FROM assignatures
+        LEFT JOIN graus_assignatures
+            ON graus_assignatures.assignatura_codi = assignatures.codi
+        LEFT JOIN graus
+            ON graus.id = graus_assignatures.grau_id
+        WHERE assignatures.codi = ?
+        GROUP BY
+            assignatures.codi,
+            assignatures.titol,
+            assignatures.semestre,
+            assignatures.model_avaluacio,
+            assignatures.descripcio,
+            assignatures.url
+    """, (codi,)).fetchone()
+    
+    connexio.close()
+
+    return assignatura
+
+
+def obtenir_graus():
+    connexio = obtenir_connexio()
+
+    graus = connexio.execute("""
+        SELECT id, nom, url
+        FROM graus
+        ORDER by nom
+    """).fetchall()
+
+    connexio.close()
+
+    return graus
+
+def obtenir_assignatures_per_grau(grau_id):
+    connexio = obtenir_connexio()
+
+    assignatures = connexio.execute("""
+                                    SELECT
+                                        assignatures.codi,
+                                        assignatures.titol,
+                                        assignatures.semestre,
+                                        assignatures.model_avaluacio,
+                                        assignatures.descripcio,
+                                        assignatures.url,
+                                        GROUP_CONCAT(graus.nom, ', ') AS graus
+                                    FROM assignatures
+                                    LEFT JOIN graus_assignatures
+                                        ON graus_assignatures.assignatura_codi = assignatures.codi
+                                    LEFT JOIN graus
+                                        ON graus.id = graus_assignatures.grau_id
+                                    WHERE assignatures.codi IN (
+                                        SELECT assignatura_codi
+                                        FROM graus_assignatures
+                                        WHERE grau_id = ?
+                                    )
+                                    GROUP BY
+                                        assignatures.codi,
+                                        assignatures.titol,
+                                        assignatures.semestre,
+                                        assignatures.model_avaluacio,
+                                        assignatures.descripcio,
+                                        assignatures.url
+                                    ORDER by assignatures.codi
+                                    """, (grau_id,)).fetchall()
+    
+    connexio.close()
+
+    return assignatures
