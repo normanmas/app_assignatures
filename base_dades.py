@@ -4,11 +4,13 @@ import sqlite3
 ruta_base_dades = "dades/assignatures.sqlite"
 
 # Crerar funcions de la base de dades
+
 # Obrir una connexió a la base de dades
 def obtenir_connexio():
     connexio = sqlite3.connect(ruta_base_dades)
     connexio.row_factory = sqlite3.Row
     return connexio
+
 
 # Crear les taules per primer cop, per si no existeixen.
 def crear_taules():
@@ -25,6 +27,8 @@ def crear_taules():
             url TEXT            
         )
     """)
+
+    # Taula dels graus relacionats amb informàtica
     connexio.execute("""
         CREATE TABLE IF NOT EXISTS graus (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,6 +36,8 @@ def crear_taules():
             url TEXT NOT NULL UNIQUE
         )
     """)
+
+    
     connexio.execute("""
         CREATE TABLE IF NOT EXISTS graus_assignatures (
             grau_id INTEGER NOT NULL,
@@ -39,6 +45,17 @@ def crear_taules():
             PRIMARY KEY (grau_id, assignatura_codi)
         )
     """)
+
+    # Taula amb les diferents assignatures ja aprovades
+    connexio.execute("""
+                     CREATE TABLE IF NOT EXISTS assignatures_aprovades (
+                     codi TEXT NOT NULL,
+                     semestre TEXT NOT NULL,
+                     nota,
+                     observacions
+        )
+    """)
+
     connexio.commit()
     connexio.close()
 
@@ -216,6 +233,7 @@ def obtenir_graus():
 
     return graus
 
+
 def obtenir_assignatures_per_grau(grau_id):
     connexio = obtenir_connexio()
 
@@ -251,3 +269,48 @@ def obtenir_assignatures_per_grau(grau_id):
     connexio.close()
 
     return assignatures
+
+
+# Gestió de les assignatures ja aprovades
+
+# Afegir una assignatura ja aprovada
+def afegir_assignatura_aprovada(codi, semestre, nota, observacions):
+    connexio = obtenir_connexio()
+
+    # Eliminar si ja estava creada per evitar duplicitats.
+    connexio.execute("""
+                     DELETE FROM assignatures_aprovades
+                     WHERE codi = ?
+                     """, (codi,))
+    
+    connexio.execute("""
+                     INSERT INTO assignatures_aprovades (codi, semestre, nota, observacions)
+                     VALUES (?, ?, ? ,?)
+    """, (codi, semestre, nota, observacions))
+    connexio.commit()
+    connexio.close()
+
+# Eliminar una assignatura ja aprovada
+def eliminar_assignatura_aprovada(codi):
+    connexio = obtenir_connexio()
+
+    connexio.execute("""
+                     DELETE FROM assignatures_aprovades
+                     WHERE codi = ?
+                     """, (codi))
+    connexio.commit()
+    connexio.close()
+
+
+# Funció per consultar assignatures ja aprovades
+def obtenir_assignatures_aprovades():
+    connexio = obtenir_connexio()
+
+    assignatures_aprovades = connexio.execute("""
+                             SELECT codi, semestre, nota, observacions
+                             FROM assignatures_aprovades
+                             """).fetchall()
+    
+    connexio.close()
+
+    return assignatures_aprovades

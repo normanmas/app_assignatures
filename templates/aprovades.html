@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignatures aprovades</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estil.css') }}">
+</head>
+<body>
+    <header class="capçalera">
+        <h1>Assignatures aprovades</h1>
+        <p>Assignatures que ja no cal tornar a triar.</p>
+    </header>
+
+    <main class="contingut">
+        <section class="targeta">
+            <h2>Afegir assignatura aprovada</h2>
+
+            <form method="post" action="/aprovades">
+                <label for="codi">Codi:</label>
+                <input type="text" name="codi" id="codi" required>
+
+                <label for="semestre">Semestre:</label>
+                <input type="text" name="semestre" id="semestre" required>
+
+                <label for="nota">Nota:</label>
+                <input type="text" name="nota" id="nota">
+
+                <label for="observacions">Observacions:</label>
+                <input type="text" name="observacions" id="observacions">
+
+                <button type="submit">Guardar</button>
+            </form>
+
+            <h2>Assignatures guardades</h2>
+
+            <table class="taula-assignatures">
+                <thead>
+                    <tr>
+                        <th>Codi</th>
+                        <th>Semestre</th>
+                        <th>Nota</th>
+                        <th>Observacions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assignatura in assignatures_aprovades %}
+                        <tr>
+                            <td>{{ assignatura.codi }}</td>
+                            <td>{{ assignatura.semestre }}</td>
+                            <td>{{ assignatura.nota }}</td>
+                            <td>{{ assignatura.observacions }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p>
+                <a class="boto" href="/">Tornar</a>
+            </p>
+        </section>
+    </main>
+</body>
+</html>

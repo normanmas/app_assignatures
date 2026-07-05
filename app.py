@@ -11,7 +11,10 @@ from base_dades import(
     relacionar_grau_assignatura,
     obtenir_assignatura_codi,
     obtenir_graus,
-    obtenir_assignatures_per_grau
+    obtenir_assignatures_per_grau,
+    afegir_assignatura_aprovada,
+    eliminar_assignatura_aprovada,
+    obtenir_assignatures_aprovades
 )
 from scraper import llegir_assignatures_grau, llegir_detall_assignatura
 
@@ -26,11 +29,13 @@ aplicacio = Flask(__name__)
 #  ]
 
 # Creació de rutes
+
+# Ruta app principal
 @aplicacio.route("/")
 def inici():
     return render_template("index.html")
 
-
+# Ruta on es guarden totes les assignatures
 @aplicacio.route("/assignatures")
 def veure_assignatures():
     grau_id = request.args.get("grau_id")
@@ -132,6 +137,27 @@ def actualitzar_detall(codi):
 def veure_assignatura(codi):
     assignatura = obtenir_assignatura_codi(codi)
     return render_template('assignatura.html', assignatura=assignatura)
+
+
+@aplicacio.route("/aprovades", methods=["GET", "POST"])
+def veure_aprovades():
+    if request.method == "POST":
+        codi = request.form.get("codi")
+        semestre = request.form.get("semestre")
+        nota = request.form.get("nota")
+        observacions = request.form.get("observacions")
+
+        if codi and semestre:
+            afegir_assignatura_aprovada(codi, semestre, nota, observacions)
+
+        return redirect(url_for("veure_aprovades"))
+    
+    assignatures_aprovades = obtenir_assignatures_aprovades()
+
+    return render_template(
+        "aprovades.html",
+        assignatures_aprovades=assignatures_aprovades
+    )
 
 
 if __name__ == "__main__":
