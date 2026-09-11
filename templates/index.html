@@ -1,24 +1,25 @@
-<!DOCTYPE html>
-<html lang="ca">
-<head>
-    <meta charset="UTF-8">
-    <title>Tria l'assignatura</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='estil.css') }}">
-</head>
-<body>
-    <header class="capçalera">
-        <h1>Aplicació per triar assignatures</h1>
-        <p>Compara assignatures, crèdits i canvis del pla docent.</p>
-    </header>
+{% extends "base.html" %}
 
-    <main class="contingut">
-        <section class="targeta">
-            <h2>Benvingut</h2>
-            <p>Aquesta aplicació ajuda a consultar i comparar assignatures.</p>
-            <a class="boto" href="/assignatures">Veure assignatures</a>
-            <a class="boto" href="/importar">Importar assignatures UOC</a>
-            <a class="boto" href="/aprovades">Assignatures aprovades</a>
-        </section>
-    </main>
-</body>
-</html>
+{% block title %}Tria l'assignatura{% endblock %}
+
+{% block content %}
+    <section class="targeta">
+        <h2>Benvingut</h2>
+        <p>Aquesta aplicació ajuda a consultar i comparar assignatures.</p>
+        
+        <!-- Barra de cerca ràpida -->
+        <form method="get" action="{{ url_for('cercar_assignatures') }}" class="barra-cerca">
+            <input type="text" name="q" placeholder="Buscar assignatures..." required>
+            <button type="submit">Buscar</button>
+        </form>
+        
+        <div style="margin: 16px 0;"></div>
+        
+        <a class="boto" href="{{ url_for('veure_assignatures') }}">Veure assignatures</a>
+        <a class="boto" href="{{ url_for('importar_assignatures') }}">Importar assignatures UOC</a>
+        <a class="boto" href="{{ url_for('veure_aprovades') }}">Assignatures aprovades</a>
+        <a class="boto" href="{{ url_for('veure_interessants') }}">Assignatures interessants</a>
+        <a class="boto" href="{{ url_for('esborrar_cache_ruta') }}">Esborrar cache</a>
+    </section>
+{% endblock %}
+

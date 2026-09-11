@@ -1,21 +1,22 @@
-<!DOCTYPE html>
-<html lang="ca">
-<head>
-    <meta charset="UTF-8">
-    <title>Assignatures</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='estil.css') }}">
-</head>
-<body>
-    <header class="capçalera">
-        <h1>Assignatures</h1>
-        <p>Llista inicial d'assignatures.</p>
-    </header>
-    <main class="contingut">
-        <section class="targeta">
-            <h2>Assignatures importades</h2>
+{% extends "base.html" %}
 
-            <!-- Formulari per filtrar les assignatures per grau -->
-            <form method="get" action="/assignatures">
+{% block title %}Assignatures{% endblock %}
+
+{% block header_title %}Assignatures{% endblock %}
+{% block header_subtitle %}Llista d'assignatures importades{% endblock %}
+
+{% block content %}
+    <section class="targeta">
+        <h2>Assignatures importades</h2>
+
+        <!-- Barra de cerca ràpida -->
+        <form method="get" action="{{ url_for('cercar_assignatures') }}" class="barra-cerca">
+            <input type="text" name="q" placeholder="Buscar assignatures..." value="{{ cercat if cercat else '' }}">
+            <button type="submit">Buscar</button>
+        </form>
+
+        <!-- Formulari per filtrar les assignatures per grau -->
+        <form method="get" action="{{ url_for('veure_assignatures') }}">
 
                 <!-- Filtre per grau -->
                 <label for="grau_id">Filtrar per grau:</label>
@@ -51,6 +52,7 @@
                         <th>Títol</th>
                         <th>Graus</th>
                         <th>Semestre</th>
+                        <th>Crèdits</th>
                         <th>Model d'avaluació</th>
                         <th>Descripció</th>
                         <th>Pla docent</th>
@@ -62,7 +64,7 @@
                         <tr>
                             <td>{{ assignatura.codi }}</td>
                             <td>
-                                <a href="/assignatura/{{ assignatura.codi }}">{{ assignatura.titol }}</a>
+                                <a href="{{ url_for('veure_assignatura', codi=assignatura.codi) }}">{{ assignatura.titol }}</a>
                             </td>
                             <td>
                                 {% if assignatura.graus %}
@@ -72,6 +74,7 @@
                                 {% endif %}
                             </td>
                             <td>{{ assignatura.semestre }}</td>
+                            <td>{{ assignatura.credits if assignatura.credits else '-' }}</td>
                             <td>{{ assignatura.model_avaluacio }}</td>
                             <td>
                                 {% if assignatura.descripcio %}
@@ -87,13 +90,20 @@
                                 <a href="{{ assignatura.url }}" target="_blank">Veure pla docent</a>
                             </td>
                             <td>
-                                <a href="/actualitzar-detall/{{ assignatura.codi }}">Actualitzar detall</a>
+                                <a href="{{ url_for('actualitzar_detall', codi=assignatura.codi) }}">Actualitzar detall</a>
+                                <form method="post" action="{{ url_for('toggle_interessant', codi=assignatura.codi) }}" style="display: inline; margin-left: 8px;">
+                                    <button type="submit" 
+                                            {% if assignatura.codi in codis_interessants %}style="background-color: #f59e0b; color: white; padding: 4px 8px; border: none; border-radius: 4px;" 
+                                            title="Desmarcar com a interessant"{% else %}style="background-color: #84cc16; color: white; padding: 4px 8px; border: none; border-radius: 4px;" 
+                                            title="Marcar com a interessant"{% endif %}>
+                                        {% if assignatura.codi in codis_interessants %}⭐{% else %}☆{% endif %}
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </section>
-    </main>
-</body>
-</html>
+{% endblock %}
+
