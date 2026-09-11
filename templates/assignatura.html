@@ -1,31 +1,26 @@
-<!DOCTYPE html>
-<html lang="ca">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ assignatura.titol }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='estil.css') }}">
-</head>
-<body>
-    <header class="capçalera">
-        <h1>{{ assignatura.titol }}</h1>
-        <p>{{ assignatura.codi }}</p>
-    </header>
+{% extends "base.html" %}
 
-    <main class="contingut">
-        <section class="targeta">
-            <p><strong>Graus:</strong> {{ assignatura.graus  }}</p>
-            <p><strong>Semestre:</strong> {{ assignatura.semestre }}</p>
-            <p><strong>Model d'avaluació:</strong> {{ assignatura.model_avaluacio }}</p>
+{% block title %}{{ assignatura.titol }}{% endblock %}
 
-            <h2>Descripció</h2>
-            <p>{{ assignatura.descripcio }}</p>
+{% block header_title %}{{ assignatura.titol }}{% endblock %}
+{% block header_subtitle %}{{ assignatura.codi }}{% endblock %}
 
-            <p>
-                <a class="boto" href="{{ assignatura.url }}" target="_blank">Veure pla docent</a>
-                <a class="boto" href="/actualitzar-detall/{{ assignatura.codi }}">Actualitzar detall</a>
-                <a class="boto" href="/assignatures">Tornar</a>
-            </p>
-        </section>
-    </main>
-</body>
-</html>
+{% block content %}
+    <section class="targeta">
+        <p><strong>Graus:</strong> {{ assignatura.graus if assignatura.graus else 'Sense grau assignat' }}</p>
+        <p><strong>Semestre:</strong> {{ assignatura.semestre }}</p>
+        <p><strong>Model d'avaluació:</strong> {{ assignatura.model_avaluacio }}</p>
+        {% if assignatura.credits %}
+        <p><strong>Crèdits:</strong> {{ assignatura.credits }}</p>
+        {% endif %}
+
+        <h2>Descripció</h2>
+        <p>{{ assignatura.descripcio if assignatura.descripcio else 'Pendent de descripció' }}</p>
+
+        <p style="margin-top: 16px;">
+            <a class="boto" href="{{ assignatura.url }}" target="_blank">Veure pla docent</a>
+            <a class="boto" href="{{ url_for('actualitzar_detall', codi=assignatura.codi) }}">Actualitzar detall</a>
+            <a class="boto" href="{{ url_for('veure_assignatures') }}">Tornar</a>
+        </p>
+    </section>
+{% endblock %}

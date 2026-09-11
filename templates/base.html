@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Aplicació Assignatures{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estil.css') }}">
+</head>
+<body>
+    <header class="capçalera">
+        {% block header %}
+        <h1>{% block header_title %}Aplicació per triar assignatures{% endblock %}</h1>
+        <p>{% block header_subtitle %}Compara assignatures, crèdits i canvis del pla docent.{% endblock %}</p>
+        {% endblock %}
+    </header>
+
+    <main class="contingut">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

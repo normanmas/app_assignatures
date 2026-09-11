@@ -8,6 +8,8 @@
 {% block content %}
     <section class="targeta">
         <h2>Assignatures importades</h2>
+        
+        <a href="{{ url_for('inici') }}" class="boto">Tornar a inici</a>
 
         <!-- Barra de cerca ràpida -->
         <form method="get" action="{{ url_for('cercar_assignatures') }}" class="barra-cerca">
@@ -40,19 +42,23 @@
                     <option value="EX" {% if model_avaluacio == "EX" %}selected{% endif %}>EX</option>
                     <option value="Pendent" {% if model_avaluacio == "Pendent" %}selected{% endif %}>Pendent</option>
                 </select>
+
+                <!-- Filtre per excloure aprovades -->
+                <label for="excloure_aprovades">Excloure aprovades:</label>
+                <input type="checkbox" name="excloure_aprovades" id="excloure_aprovades" 
+                       value="1" {% if excloure_aprovades == "1" %}checked{% endif %}>
                 
                 <button type="submit">Filtrar</button>
             </form>
 
             <!-- Taula amb les assignatures importades -->
-            <table class = "taula-assignatures">
+            <table class = "taula-assignatures taula-principal">
                 <thead>
                     <tr>
                         <th>Codi</th>
                         <th>Títol</th>
                         <th>Graus</th>
                         <th>Semestre</th>
-                        <th>Crèdits</th>
                         <th>Model d'avaluació</th>
                         <th>Descripció</th>
                         <th>Pla docent</th>
@@ -74,7 +80,6 @@
                                 {% endif %}
                             </td>
                             <td>{{ assignatura.semestre }}</td>
-                            <td>{{ assignatura.credits if assignatura.credits else '-' }}</td>
                             <td>{{ assignatura.model_avaluacio }}</td>
                             <td>
                                 {% if assignatura.descripcio %}

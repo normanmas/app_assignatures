@@ -110,6 +110,7 @@ def esborrar_cache_ruta():
 def veure_assignatures():
     grau_id = request.args.get("grau_id")
     model_avaluacio = request.args.get("model_avaluacio", "")
+    excloure_aprovades = request.args.get("excloure_aprovades", "")
     graus = obtenir_graus()
 
     if grau_id:
@@ -126,6 +127,14 @@ def veure_assignatures():
         
         assignatures = assignatures_filtrades
 
+    # Filtrar assignatures aprovades si s'ha marcats l'opció
+    if excloure_aprovades == "1":
+        codis_aprovades = set()
+        for item in obtenir_assignatures_aprovades():
+            codis_aprovades.add(item['codi'])
+        
+        assignatures = [a for a in assignatures if a['codi'] not in codis_aprovades]
+
     # Obtenir llistat de codis d'assignatures interessants per comprovar ràpidament
     codis_interessants = set()
     for item in obtenir_assignatures_interessants():
@@ -136,6 +145,8 @@ def veure_assignatures():
         assignatures = assignatures,
         graus=graus,
         grau_id=grau_id,
+        model_avaluacio=model_avaluacio,
+        excloure_aprovades=excloure_aprovades,
         codis_interessants=codis_interessants
         )
 
@@ -253,6 +264,7 @@ def veure_interessants():
     for item in codis_interessants:
         assignatura = obtenir_assignatura_codi(item['codi'])
         if assignatura:
+            assignatura = dict(assignatura)
             assignatura['data_afegit'] = item['data_afegit']
             assignatures_interessants.append(assignatura)
     

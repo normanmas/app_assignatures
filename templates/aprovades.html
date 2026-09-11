@@ -1,63 +1,65 @@
-<!DOCTYPE html>
-<html lang="ca">
-<head>
-    <meta charset="UTF-8">
-    <title>Assignatures aprovades</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='estil.css') }}">
-</head>
-<body>
-    <header class="capçalera">
-        <h1>Assignatures aprovades</h1>
-        <p>Assignatures que ja no cal tornar a triar.</p>
-    </header>
+{% extends "base.html" %}
 
-    <main class="contingut">
-        <section class="targeta">
-            <h2>Afegir assignatura aprovada</h2>
+{% block title %}Assignatures aprovades{% endblock %}
 
-            <form method="post" action="/aprovades">
-                <label for="codi">Codi:</label>
-                <input type="text" name="codi" id="codi" required>
+{% block header_title %}Assignatures aprovades{% endblock %}
+{% block header_subtitle %}Assignatures que ja no cal tornar a triar{% endblock %}
 
-                <label for="semestre">Semestre:</label>
-                <input type="text" name="semestre" id="semestre" required>
+{% block content %}
+    <section class="targeta">
+        <h2>Afegir assignatura aprovada</h2>
 
-                <label for="nota">Nota:</label>
-                <input type="text" name="nota" id="nota">
+        <form method="post" action="{{ url_for('veure_aprovades') }}">
+            <label for="codi">Codi:</label>
+            <input type="text" name="codi" id="codi" required>
 
-                <label for="observacions">Observacions:</label>
-                <input type="text" name="observacions" id="observacions">
+            <label for="semestre">Semestre:</label>
+            <input type="text" name="semestre" id="semestre" required>
 
-                <button type="submit">Guardar</button>
-            </form>
+            <label for="nota">Nota:</label>
+            <input type="text" name="nota" id="nota">
 
-            <h2>Assignatures guardades</h2>
+            <label for="observacions">Observacions:</label>
+            <input type="text" name="observacions" id="observacions">
 
-            <table class="taula-assignatures">
-                <thead>
+            <button type="submit">Guardar</button>
+        </form>
+
+        <h2>Assignatures guardades</h2>
+
+        <table class="taula-assignatures taula-aprovades">
+            <thead>
+                <tr>
+                    <th>Codi</th>
+                    <th>Títol</th>
+                    <th>Semestre</th>
+                    <th>Nota</th>
+                    <th>Observacions</th>
+                    <th>Accions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignatura in assignatures_aprovades %}
                     <tr>
-                        <th>Codi</th>
-                        <th>Semestre</th>
-                        <th>Nota</th>
-                        <th>Observacions</th>
+                        <td>{{ assignatura.codi }}</td>
+                        <td>{{ assignatura.titol }}</td>
+                        <td>{{ assignatura.semestre }}</td>
+                        <td>{{ assignatura.nota if assignatura.nota else '-' }}</td>
+                        <td>{{ assignatura.observacions if assignatura.observacions else '-' }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('eliminar_aprovada', codi=assignatura.codi) }}" 
+                                  onsubmit="return confirm('Estàs segur que vols eliminar aquesta assignatura de les aprovades?')">
+                                <button type="submit" style="background-color: #ef4444; padding: 4px 8px;">Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for assignatura in assignatures_aprovades %}
-                        <tr>
-                            <td>{{ assignatura.codi }}</td>
-                            <td>{{ assignatura.semestre }}</td>
-                            <td>{{ assignatura.nota }}</td>
-                            <td>{{ assignatura.observacions }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                {% endfor %}
+            </tbody>
+        </table>
 
-            <p>
-                <a class="boto" href="/">Tornar</a>
-            </p>
-        </section>
-    </main>
-</body>
-</html>
+        <p style="margin-top: 16px;">
+            <a class="boto" href="{{ url_for('inici') }}">Tornar</a>
+        </p>
+    </section>
+{% endblock %}
+

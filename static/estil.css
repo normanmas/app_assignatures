@@ -13,8 +13,8 @@ body{
 }
 
 .contingut{
-    max-width: 900px;
-    margin: 32px auto;
+    max-width: 95%;
+    margin: 16px auto;
     padding: 0 16px;
 }
 
@@ -38,6 +38,7 @@ body{
     width: 100%;
     border-collapse: collapse;
     margin-top: 16px;
+    table-layout: fixed;
 }
 
 .taula-assignatures th,
@@ -45,12 +46,43 @@ body{
     border: 1px solid #d9e2ec;
     padding: 12px;
     text-align: left;
+    word-wrap: break-word;
 }
 
 .taula-assignatures th {
     background-color: #e0ecff;
+    font-weight: bold;
 }
 
 .taula-assignatures tr:nth-child(even) {
     background-color: #f8fafc;
 }
+
+/* Amplades de les columnes de la taula principal (assignatures.html) */
+.taula-principal th:nth-child(1), .taula-principal td:nth-child(1) { width: 8%; }
+.taula-principal th:nth-child(2), .taula-principal td:nth-child(2) { width: 15%; }
+.taula-principal th:nth-child(3), .taula-principal td:nth-child(3) { width: 20%; }
+.taula-principal th:nth-child(4), .taula-principal td:nth-child(4) { width: 8%; }
+.taula-principal th:nth-child(5), .taula-principal td:nth-child(5) { width: 10%; }
+.taula-principal th:nth-child(6), .taula-principal td:nth-child(6) { width: 28%; }
+.taula-principal th:nth-child(7), .taula-principal td:nth-child(7) { width: 10%; }
+.taula-principal th:nth-child(8), .taula-principal td:nth-child(8) { width: 11%; }
+
+/* Amplades de les columnes de la taula d'aprovades */
+.taula-aprovades th:nth-child(1), .taula-aprovades td:nth-child(1) { width: 10%; }
+.taula-aprovades th:nth-child(2), .taula-aprovades td:nth-child(2) { width: 25%; }
+.taula-aprovades th:nth-child(3), .taula-aprovades td:nth-child(3) { width: 15%; }
+.taula-aprovades th:nth-child(4), .taula-aprovades td:nth-child(4) { width: 8%; }
+.taula-aprovades th:nth-child(5), .taula-aprovades td:nth-child(5) { width: 30%; }
+.taula-aprovades th:nth-child(6), .taula-aprovades td:nth-child(6) { width: 12%; }
+
+/* Amplades de les columnes de la taula d'interessants */
+.taula-interessants th:nth-child(1), .taula-interessants td:nth-child(1) { width: 5%; }
+.taula-interessants th:nth-child(2), .taula-interessants td:nth-child(2) { width: 15%; }
+.taula-interessants th:nth-child(3), .taula-interessants td:nth-child(3) { width: 18%; }
+.taula-interessants th:nth-child(4), .taula-interessants td:nth-child(4) { width: 6%; }
+.taula-interessants th:nth-child(5), .taula-interessants td:nth-child(5) { width: 8%; }
+.taula-interessants th:nth-child(6), .taula-interessants td:nth-child(6) { width: 35%; }
+.taula-interessants th:nth-child(7), .taula-interessants td:nth-child(7) { width: 8%; }
+.taula-interessants th:nth-child(8), .taula-interessants td:nth-child(8) { width: 6%; }
+.taula-interessants th:nth-child(9), .taula-interessants td:nth-child(9) { width: 9%; }

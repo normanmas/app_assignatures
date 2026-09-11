@@ -10,14 +10,13 @@
         <h2>Assignatures marcades com a interessants</h2>
         <p>Assignatures que has marcat per guardar com a referència.</p>
 
-        <table class="taula-assignatures">
+        <table class="taula-assignatures taula-interessants">
             <thead>
                 <tr>
                     <th>Codi</th>
                     <th>Títol</th>
                     <th>Graus</th>
                     <th>Semestre</th>
-                    <th>Crèdits</th>
                     <th>Model d'avaluació</th>
                     <th>Descripció</th>
                     <th>Pla docent</th>
@@ -40,7 +39,6 @@
                             {% endif %}
                         </td>
                         <td>{{ assignatura.semestre }}</td>
-                        <td>{{ assignatura.credits if assignatura.credits else '-' }}</td>
                         <td>{{ assignatura.model_avaluacio }}</td>
                         <td>
                             {% if assignatura.descripcio %}

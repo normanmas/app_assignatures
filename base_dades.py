@@ -305,7 +305,7 @@ def eliminar_assignatura_aprovada(codi):
     connexio.execute("""
                      DELETE FROM assignatures_aprovades
                      WHERE codi = ?
-                     """, (codi))
+                     """, (codi,))
     connexio.commit()
     connexio.close()
 
@@ -315,8 +315,10 @@ def obtenir_assignatures_aprovades():
     connexio = obtenir_connexio()
 
     assignatures_aprovades = connexio.execute("""
-                             SELECT codi, semestre, nota, observacions, data_aprovacio
-                             FROM assignatures_aprovades
+                             SELECT a.codi, a.titol, ap.semestre, ap.nota, ap.observacions, ap.data_aprovacio
+                             FROM assignatures_aprovades ap
+                             JOIN assignatures a ON ap.codi = a.codi
+                             ORDER BY a.codi
                              """).fetchall()
     
     connexio.close()
